@@ -1,0 +1,23 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "about": "About Doctor",
+    "specialities": "Specialities",
+    "success_stories": "Success Stories",
+    "blog": "Blogs",
+    "contact": "Contact",
+    "book_appointment": "Book Appointment",
+    "admin_login": "Admin Login"
+  },
+  "Hero": {
+    "label": "AL SHIFA HOMEOPATHIC CLINIC — SARGODHA",
+    "heading": "Meet Dr. Ahmed Ali — Your Partner in Personalized Homeopathic Care.",
+    "description": "Discover a personalized approach to homeopathic consultation, with attention to individual health concerns, medical history, and overall well-being.",
+    "btn_book": "Book an Appointment",
+    "btn_explore": "Explore Doctor's Profile"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "An error occurred. Please try again."
+  }
+}
