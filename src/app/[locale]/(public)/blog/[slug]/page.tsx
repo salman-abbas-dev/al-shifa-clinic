@@ -1,36 +1,81 @@
-import { getBlogBySlug } from "@/repositories/public-content.repository";
-import { getLocalized } from "@/lib/utils/locale-mapper";
-import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/routing";
-import { ChevronLeft, Calendar, User } from "lucide-react";
-import Image from "next/image";
+import { getBlogBySlug } from "@/repositories/public-content.repository"
+import { getLocalized } from "@/lib/utils/locale-mapper"
+import { notFound } from "next/navigation"
+import { setRequestLocale } from "next-intl/server"
+import { Link } from "@/i18n/routing"
+import { JsonLd } from "@/components/seo/json-ld"
+import { ChevronLeft, Calendar, User } from "lucide-react"
+import Image from "next/image"
+
+// Generate Dynamic SEO Metadata
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: Promise<{ locale: string, slug: string }> 
+}) {
+  const { locale, slug } = await params
+  const blog = await getBlogBySlug(slug)
+  
+  if (!blog) return {}
+
+  const title = blog[`seo_title_${locale}` as keyof typeof blog] as string || getLocalized(blog, "title", locale)
+  const description = blog[`meta_description_${locale}` as keyof typeof blog] as string || getLocalized(blog, "excerpt", locale)
+  const imageUrl = blog.featured_image_url || "/images/default-blog.jpg"
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      publishedTime: blog.published_at || blog.created_at,
+      authors: [blog.profiles?.full_name || "Dr. Ahmed Ali"],
+      images: [imageUrl],
+    },
+  }
+}
 
 export default async function BlogDetailPage({ 
   params 
 }: { 
   params: Promise<{ locale: string, slug: string }> 
 }) {
-  const { locale, slug } = await params;
-  setRequestLocale(locale);
+  const { locale, slug } = await params
+  setRequestLocale(locale)
 
-  const blog = await getBlogBySlug(slug);
+  const blog = await getBlogBySlug(slug)
   
-  if (!blog) {
-    notFound();
-  }
+  if (!blog) notFound()
 
-  const title = getLocalized(blog, "title", locale);
-  const content = getLocalized(blog, "content", locale) || getLocalized(blog, "excerpt", locale);
-  const categoryName = blog.blog_categories ? getLocalized(blog.blog_categories, "name", locale) : "";
-  const authorName = blog.profiles?.full_name || "Dr. Ahmed Ali";
+  const title = getLocalized(blog, "title", locale)
+  const content = getLocalized(blog, "content", locale) || getLocalized(blog, "excerpt", locale)
+  const categoryName = blog.blog_categories ? getLocalized(blog.blog_categories, "name", locale) : ""
+  const authorName = blog.profiles?.full_name || "Dr. Ahmed Ali"
   const date = new Date(blog.published_at || blog.created_at).toLocaleDateString(locale === 'ur' ? 'ur-PK' : 'en-US', {
     year: 'numeric', month: 'long', day: 'numeric'
-  });
-  const imageUrl = blog.featured_image_url || "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=1200";
+  })
+  const imageUrl = blog.featured_image_url || "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=1200"
+
+  // Article JSON-LD Schema
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": title,
+    "image": [imageUrl],
+    "datePublished": blog.published_at || blog.created_at,
+    "dateModified": blog.updated_at,
+    "author": [{
+      "@type": "Person",
+      "name": authorName,
+      "url": `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/about`
+    }]
+  }
 
   return (
     <article className="bg-white min-h-screen pb-16">
+      <JsonLd data={articleSchema} />
+      
       {/* Hero Header */}
       <div className="relative h-[400px] md:h-[500px] w-full">
         <Image src={imageUrl} alt={title} fill className="object-cover" priority />
@@ -68,10 +113,9 @@ export default async function BlogDetailPage({
       {/* Content */}
       <div className="container mx-auto px-4 lg:px-8 py-12 max-w-3xl">
         <div className="prose prose-lg max-w-none prose-headings:text-clinic-forest prose-a:text-clinic-sage hover:prose-a:text-clinic-forest prose-img:rounded-xl">
-          {/* Note: In a real app using TipTap, we would use a proper HTML sanitizer before rendering dangerouslySetInnerHTML */}
           <div dangerouslySetInnerHTML={{ __html: content }} className="whitespace-pre-wrap" />
         </div>
       </div>
     </article>
-  );
+  )
 }

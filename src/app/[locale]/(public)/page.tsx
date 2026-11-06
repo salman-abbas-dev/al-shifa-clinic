@@ -1,4 +1,5 @@
 import { HeroSection } from "@/components/home/hero-section"
+import { JsonLd } from "@/components/seo/json-ld"
 import { useTranslations } from "next-intl"
 import Image from "next/image"
 import { Link } from "@/i18n/routing"
@@ -6,12 +7,34 @@ import { Button } from "@/components/ui/button"
 
 export default function HomePage() {
   const tNav = useTranslations("Navigation")
+  const tHero = useTranslations("Hero")
   
+  // Local SEO Structured Data for Google Maps and Rich Results
+  const clinicSchema = {
+    "@context": "https://schema.org",
+    "@type": ["MedicalClinic", "Physician"],
+    "name": "Al Shifa Homeopathic Clinic",
+    "doctor": {
+      "@type": "Person",
+      "name": "Dr. Ahmed Ali",
+      "jobTitle": "Homeopathic Physician"
+    },
+    "description": tHero("description"),
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Sargodha",
+      "addressRegion": "Punjab",
+      "addressCountry": "PK"
+    },
+    "medicalSpecialty": "Homeopathy",
+    "url": process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  }
+
   return (
     <div className="flex flex-col w-full">
+      <JsonLd data={clinicSchema} />
       <HeroSection />
 
-      {/* About Doctor Preview Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -43,8 +66,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Note: Specialities Grid, Testimonials, and Blogs will be integrated here dynamically in Phase 5 */}
     </div>
   )
 }
