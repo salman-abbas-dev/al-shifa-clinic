@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,51 +7,58 @@
   :root {
     /* Warm off-white background */
     --background: 210 17% 98%;
-    /* Dark charcoal foreground for readability */
     --foreground: 0 0% 20%;
 
-    /* Clinic Primary: Deep Forest Green (#1B4332) */
+    /* Clinic Primary: Deep Forest Green */
     --primary: 155 42% 18%;
     --primary-foreground: 210 40% 98%;
 
-    /* Clinic Secondary: Sage Green (#8FBC8F) */
+    /* Clinic Secondary: Sage Green */
     --secondary: 120 25% 65%;
     --secondary-foreground: 155 42% 18%;
 
-    /* Muted elements & borders */
+    /* Muted elements and borders */
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Accent: Muted Gold/Warm Beige */
+    /* Accent: Muted Gold / Warm Beige */
     --accent: 46 65% 52%;
     --accent-foreground: 0 0% 100%;
 
+    /* Destructive */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
+    /* Borders and inputs */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 155 42% 18%;
 
+    /* Border radius */
     --radius: 0.5rem;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
-    /* Proper font rendering */
+
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* RTL Support overrides for specific HTML elements if needed. 
-     Tailwind logical properties (e.g., ps-4, ms-2) will handle 95% of RTL layout natively. */
+  /* Urdu and RTL support */
   [dir="rtl"] {
-    font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', Arial, sans-serif;
+    font-family:
+      "Noto Nastaliq Urdu",
+      "Jameel Noori Nastaleeq",
+      Arial,
+      sans-serif;
   }
 }
