@@ -77,3 +77,16 @@ export async function getSuccessStoryBySlug(slug: string) {
   if (error) console.error("Error fetching success story:", error);
   return data;
 }
+
+// --- Clinic Settings ---
+export async function getClinicSettings() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("clinic_settings")
+    .select("*")
+    .limit(1)
+    .single();
+
+  if (error) console.error("Error fetching clinic settings:", error);
+  return data;
+}

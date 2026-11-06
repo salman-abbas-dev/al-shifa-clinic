@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Validates Pakistani numbers: 03XXXXXXXXX, +923XXXXXXXXX, 00923XXXXXXXXX
 const pakistaniPhoneRegex = /^((\+92)|(0092)|0)3[0-9]{2}\-?[0-9]{7}$/;
 
 export const appointmentSchema = z.object({
@@ -8,7 +7,7 @@ export const appointmentSchema = z.object({
   phone: z.string().regex(pakistaniPhoneRegex, "Invalid Pakistani phone number"),
   whatsapp: z.string().regex(pakistaniPhoneRegex, "Invalid WhatsApp number").optional().or(z.literal("")),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
-  age: z.coerce.number().min(1, "Age must be at least 1").max(120, "Invalid age").optional().or(z.nan()),
+  age: z.number().min(1, "Age must be at least 1").max(120, "Invalid age").optional(),
   gender: z.enum(["Male", "Female", "Other"]).optional(),
   consultation_type: z.string().min(2, "Please select a consultation type"),
   appointment_date: z.string().refine((dateString) => {
